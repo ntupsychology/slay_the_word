@@ -1,0 +1,55 @@
+---
+title: "Slay the Word"
+author: "Mark Andrews"
+date: "13 July 2018"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+```{r load_packages}
+library(tibble)
+library(dplyr)
+library(ggplot2)
+library(pander)
+```
+
+A univariate normal, or Gaussian, linear model is defined as follows. Assume that our data consists of $n$ independent pairs of observations:
+$$
+\mathcal{D} = \{(y_1, \vec{x}_1) \ldots (y_i, \vec{x}_i) \ldots (y_n, \vec{x}_n)\},
+$$
+where each $y_i \in \mathbb{R}$ and $\vec{x}_i \in \mathbb{R}^K$. We then model this data as follows:
+$$
+y_i \sim N(\beta_0 + \sum_{k=1}^{K} \beta_k x_{ik}, \sigma^2),\quad \text{for $i \in \{1,2 \ldots n\}$}.
+$$
+
+# Demonstration
+
+Here, we generate some data.
+```{r fake_data}
+N <- 50
+Df <- tibble(x = rnorm(N),
+             y = 1.25 + 2.25*x + rnorm(N),
+             z = sample(c('yes','no'), size=N, replace=T)
+)
+```
+
+```{r scatterplot, fig.cap='Scatterplot with line of best fit.', fig.width=5}
+Df %>% ggplot(mapping=aes(x=x, y=y, col=z)) +
+  geom_point() +
+  stat_smooth(method = 'lm') +
+  theme_classic()
+```
+
+Here, we fit the model with maximum likelihood estimation:
+```{r linear_model}
+M <- lm(y ~ x + z, data=Df)
+pander(summary(M))
+```
+
