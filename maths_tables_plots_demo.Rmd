@@ -5,6 +5,8 @@ date: "13 July 2018"
 output:
   word_document: default
   pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -53,3 +55,6 @@ M <- lm(y ~ x + z, data=Df)
 pander(summary(M))
 ```
 
+## Inserting images
+
+![This image is inserted.](pdf_image.pdf)
